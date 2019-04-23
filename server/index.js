@@ -1,6 +1,7 @@
 const express = require('express');
 const server = express();
 const helmet = require('helmet');
+const mongoose = require('mongoose');
 
 
 server.use((req, res, next) => {
@@ -15,11 +16,21 @@ server.use((req, res, next) => {
 server.use(helmet());
 server.use(express.json());
 
+// MONGOOSE MODELS
+require('./models/post');
+
 // ROUTES
 const postsRoutes = require('./routes/posts');
 
 server.use('/api/posts', postsRoutes);
 
+// MONGODB
+mongoose.connect(`mongodb+srv://${process.env.ATLAS_USER}:${process.env.MONGODB_ATLAS_PW}@cluster0-b3gd5.mongodb.net/
+${process.env.MONGODB_ATLAS_DB}?retryWrites=true`,{ useNewUrlParser: true }).then((_) => {
+    console.log('Connection to MongoDB was successful');
+}).catch((err) => {
+    console.log(err);
+});
 
 
 const PORT = process.env.PORT || '5000';
