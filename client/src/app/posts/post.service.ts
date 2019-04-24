@@ -17,6 +17,9 @@ export class PostService {
         });
     }
     addNewPost = (post: Post) => {
+        this.http.post<{ message: string }>('http://localhost:5000/api/posts', {...post}).subscribe(responseData => {
+            console.log(responseData.message);
+        });
         this.posts.push(post);
         this.postsChanged.next([...this.posts]);
     }
