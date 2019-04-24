@@ -17,6 +17,8 @@ router.post('/', async (req, res, next) => {
     }
     try {
         const post = new Post({ title, content })
+        await post.save();
+        res.status(200).json({ message: "New Post created" })
     } catch(err) {
         console.log(err);
         res.sendStatus(500);
