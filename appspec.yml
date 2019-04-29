@@ -10,3 +10,6 @@ hooks:
   AfterInstall:
     - location: codedeploy/after_install.sh
       timeout: 30
+  ApplicationStart:
+    - location: codedeploy/app_start.sh
+      timeout: 30
