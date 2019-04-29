@@ -4,6 +4,9 @@ files:
   - source: /server
     destination: /usr/ang-gal
 hooks:
+  BeforeInstall:
+    - location: codedeploy/before_install.sh
+      timeout: 10
   AfterInstall:
     - location: codedeploy/after_install.sh
       timeout: 30
