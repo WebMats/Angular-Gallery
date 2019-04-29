@@ -1,4 +1,4 @@
 
-cd /usr/ang-gal
+cd /usr/ang-gal/server
 ls
 npm install
