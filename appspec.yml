@@ -3,6 +3,7 @@ os: linux
 files:
   - source: /server
     destination: /usr/ang-gal
+    overwrite: true
 permissions:
   - object: /usr/ang-gal/codedeploy
     pattern: "*.sh"
