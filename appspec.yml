@@ -3,6 +3,14 @@ os: linux
 files:
   - source: /server
     destination: /usr/ang-gal
+permissions:
+  - object: /usr/ang-gal/codedeploy
+    pattern: "*.sh"
+    owner: root
+    group: root
+    mode: 755
+    type:
+      - file
 hooks:
   BeforeInstall:
     - location: codedeploy/before_install.sh
