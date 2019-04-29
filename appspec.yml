@@ -3,3 +3,7 @@ os: linux
 files:
   - source: /server
     destination: /usr/ang-gal
+hooks:
+  AfterInstall:
+    - location: codedeploy/after_install.sh
+      timeout: 30
