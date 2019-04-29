@@ -7,6 +7,7 @@ export const getAllGQL = (): string => (`
         }
     }
 `)
+
 export const createGQL = (title: string, content: string): string => (`
     mutation CreatePost {
         createPost(postInput: { title: "${title}", content: "${content}" })

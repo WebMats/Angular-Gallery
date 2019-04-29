@@ -22,15 +22,12 @@ require('./models/post');
 
 // GRAPHQL
 const resolvers = require('./graphql/resolvers');
-const schema = require('./graphql/schema');
-
+const schema = require('./graphql/schema');``
 server.use('/graphql', graphqlHttp({
     schema,
     rootValue: resolvers,
     graphiql: true,
 }))
-
-
 
 // MONGODB
 mongoose.connect(`mongodb+srv://${process.env.ATLAS_USER}:${process.env.MONGODB_ATLAS_PW}@cluster0-b3gd5.mongodb.net/
