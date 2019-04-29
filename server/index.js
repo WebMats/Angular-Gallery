@@ -2,6 +2,7 @@ const express = require('express');
 const server = express();
 const helmet = require('helmet');
 const mongoose = require('mongoose');
+const graphqlHttp = require('express-graphql');
 
 
 server.use((req, res, next) => {
@@ -19,19 +20,21 @@ server.use(express.json());
 // MONGOOSE MODELS
 require('./models/post');
 
-// ROUTES
-const postsRoutes = require('./routes/posts');
-
-server.use('/api/posts', postsRoutes);
+// GRAPHQL
+const resolvers = require('./graphql/resolvers');
+const schema = require('./graphql/schema');``
+server.use('/graphql', graphqlHttp({
+    schema,
+    rootValue: resolvers,
+    graphiql: true,
+}))
 
 // MONGODB
 mongoose.connect(`mongodb+srv://${process.env.ATLAS_USER}:${process.env.MONGODB_ATLAS_PW}@cluster0-b3gd5.mongodb.net/
 ${process.env.MONGODB_ATLAS_DB}?retryWrites=true`,{ useNewUrlParser: true }).then((_) => {
     console.log('Connection to MongoDB was successful');
+    const PORT = process.env.PORT || '5000';
+    server.listen(PORT, () => {console.log(`Listening on port ${PORT}....`)});
 }).catch((err) => {
     console.log(err);
 });
-
-
-const PORT = process.env.PORT || '5000';
-server.listen(PORT, () => {console.log(`Listening on port ${PORT}....`)});
