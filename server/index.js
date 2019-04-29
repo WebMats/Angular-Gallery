@@ -33,8 +33,8 @@ server.use('/graphql', graphqlHttp({
 mongoose.connect(`mongodb+srv://${process.env.ATLAS_USER}:${process.env.MONGODB_ATLAS_PW}@cluster0-b3gd5.mongodb.net/
 ${process.env.MONGODB_ATLAS_DB}?retryWrites=true`,{ useNewUrlParser: true }).then((_) => {
     console.log('Connection to MongoDB was successful');
-    const PORT = process.env.PORT || '5000';
-    server.listen(PORT, () => {console.log(`Listening on port ${PORT}....`)});
 }).catch((err) => {
     console.log(err);
 });
+const PORT = process.env.PORT || '5000';
+server.listen(PORT, () => {console.log(`Listening on port ${PORT}....`)});
