@@ -1,4 +1,3 @@
-
-
-cd /usr/ang-gal/server
+#!/bin/bash
+cd /ang-gal
 npm start

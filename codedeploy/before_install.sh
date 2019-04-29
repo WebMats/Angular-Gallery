@@ -1,9 +1,8 @@
-
-
-export app_root=/usr/ang-gal
+#!/bin/bash
+export app_root=/ang-gal
 if [ -d "$app_root"]; then
-    rm -rf /usr/ang-gal
-    mkdir -p /usr/ang-gal
+    rm -rf /ang-gal
+    mkdir -p /ang-gal
 else 
-    mkdir -p /usr/ang-gal
+    mkdir -p /ang-gal
 fi

@@ -1,17 +1,9 @@
 version: 0.0
 os: linux
 files:
-  - source: /
-    destination: /usr/ang-gal
+  - source: /server
+    destination: /ang-gal
     overwrite: true
-permissions:
-  - object: /usr/ang-gal/codedeploy
-    pattern: "*.sh"
-    owner: root
-    group: root
-    mode: 755
-    type:
-      - file
 hooks:
   BeforeInstall:
     - location: codedeploy/before_install.sh
