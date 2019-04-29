@@ -1,5 +1,5 @@
-# version: 0.0
-# os: linux
-# hooks: 
-#   BeforeInstall:
-#     -location
+version: 0.0
+os: linux
+files:
+  - source: ./server
+    destination: /usr/ang-gal
