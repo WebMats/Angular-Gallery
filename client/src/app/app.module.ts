@@ -6,6 +6,7 @@ import {
   MatExpansionModule, MatProgressSpinnerModule } from '@angular/material';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireStorageModule } from '@angular/fire/storage';
+import { AngularFireAuthModule } from '@angular/fire/auth';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 // COMPONENTS
 import { AppComponent } from './app.component';
@@ -32,6 +33,7 @@ import { SignupComponent } from './auth/signup/signup.component';
     BrowserModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireStorageModule,
+    AngularFireAuthModule,
     AppRoutingModule,
     ReactiveFormsModule,
     FormsModule,
