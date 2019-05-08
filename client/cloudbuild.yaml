@@ -6,6 +6,7 @@ steps:
 # Build
   - name: 'gcr.io/$PROJECT_ID/ng:latest'
     args: ['build', '--prod']
+    dir: 'client'
 # Deploy
   - name: 'gcr.io/$PROJECT_ID/firebase'
     args: ['deploy']
