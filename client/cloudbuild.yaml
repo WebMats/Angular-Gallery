@@ -1,10 +1,10 @@
 steps:
 # Install
-  - name: 'grc.io/cloud-builders/npm'
+  - name: 'gcr.io/cloud-builders/npm'
     args: ['install']
 # Build
-  - name: 'grc.io/cloud-builders/ng'
+  - name: 'gcr.io/cloud-builders/ng'
     args: ['build']
 # Deploy
-  - name: 'grc.io/$PROJECT_ID/firebase'
+  - name: 'gcr.io/$PROJECT_ID/firebase'
     args: ['deploy']
