@@ -2,9 +2,11 @@ steps:
 # Install
   - name: 'gcr.io/cloud-builders/npm'
     args: ['install']
+    dir: 'client'
 # Build
   - name: 'gcr.io/$PROJECT_ID/ng:latest'
     args: ['build', '--prod']
 # Deploy
   - name: 'gcr.io/$PROJECT_ID/firebase'
     args: ['deploy']
+    dir: 'client'
