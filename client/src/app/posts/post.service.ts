@@ -16,6 +16,7 @@ export class PostService {
     constructor(private http: HttpClient, private router: Router, private storage: AngularFireStorage) {}
 
     getPosts = () => {
+        // waiting for deployed backend url
         this.http.post<{data: { posts: Post[] }}>('http://localhost:5000/graphql', { 
             query: getAllGQL() 
         }).subscribe(({ data }) => {
