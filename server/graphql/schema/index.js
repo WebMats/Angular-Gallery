@@ -2,25 +2,21 @@ const { buildSchema } = require('graphql');
 
 
 module.exports = buildSchema(`
-    type Post {
-        id: String!
-        title: String!
-        content: String!
-        imageURL: String!
+    type User {
+        mongoId: ID!
+        firebaseId: String!
+        email: String!
     }
-    input PostInput {
-        title: String!
-        content: String!
-        imageURL: String!
+    input SignInput {
+        firebaseId: String!
+        email: String!
+        token: String!
     }
     type RootQuery {
-        posts: [Post!]
-        post(id: String!): Post!
+        signin(signinInput: SignInput): User!
     }
     type RootMutation {
-        createPost(postInput: PostInput!): String!
-        deletePost(postId: String!): String!
-        updatePost(postId: String, updateInput: PostInput): Post!
+        signup(signupInput: SignInput!): User!
     }
     schema {
         query: RootQuery
