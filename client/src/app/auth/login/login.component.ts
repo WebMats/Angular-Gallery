@@ -13,9 +13,11 @@ export class LoginComponent {
     constructor(private auth: AuthService) {}
 
     onLoginWithEmailAndPassword = (form: NgForm) => {
+        this.isLoading = true;
         this.auth.emailAndPasswordSignIn(form.value.email, form.value.password);
     }
     onLoginWithGoogle = () => {
+        this.isLoading = true;
         this.auth.googleSignIn();
     }
 }

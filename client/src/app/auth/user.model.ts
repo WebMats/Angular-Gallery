@@ -6,6 +6,6 @@ export interface Credentials {
     ra: string;
 }
 
-export class UserModel {
-    constructor(public id: string) {}
+export class User {
+    constructor(public id: string, public firebaseId: string, public email: string) {}
 }

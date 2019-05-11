@@ -13,9 +13,11 @@ export class SignupComponent {
     constructor(private fbAuth: AuthService) {}
 
     onSignUpWithEmailAndPassword = (form: NgForm) => {
+        this.isLoading = true;
         this.fbAuth.emailAndPasswordSignUp(form.value.email, form.value.password);
     }
     onSignUpWithGoogle = () => {
+        this.isLoading = true;
         this.fbAuth.googleSignIn();
     }
 
