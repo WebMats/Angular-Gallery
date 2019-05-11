@@ -1,5 +1,5 @@
-const postsResolver = require('./posts');
+const userResolver = require('./user');
 
 module.exports = {
-    ...postsResolver
+    ...userResolver
 }
