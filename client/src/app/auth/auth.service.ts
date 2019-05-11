@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
 import { auth } from 'firebase/app';
 import { Router } from '@angular/router';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { Credentials } from './user.model';
+import { Credentials, User } from './user.model';
 import { HttpClient } from '@angular/common/http';
 import { signUpGQL, signInGQL } from '../graphql/auth';
 import { Subject } from 'rxjs';
@@ -12,11 +12,14 @@ import { Subject } from 'rxjs';
   providedIn: 'root'
 })
 export class AuthService {
-  authStateChanged = new Subject<string>();
+  private authStateChanged = new Subject<User | null >();
   private token: string = '';
-  private user: object = {};
+  private user: User | null;
   constructor(private router: Router, private afAuth: AngularFireAuth, private http: HttpClient) { }
 
+  getToken = (): string => this.token;
+  getAuthStateListener = () => this.authStateChanged.asObservable();
+  getUser = () => this.user;
   googleSignIn = async () => {
     const provider = new auth.GoogleAuthProvider();
     const credentials = await this.afAuth.auth.signInWithPopup(provider);
@@ -33,28 +36,41 @@ export class AuthService {
     return this.signUpUser(<any>credentials.user);
   }
 
-  signOut = async () => {
-    await this.afAuth.auth.signOut();
-    this.token = '';
-    this.user = {};
-    this.authStateChanged.next(this.token);
-  }
-
-  getToken = (): string => this.token;
-
   private signUpUser = ({ email, uid: id, ra: token }: Credentials) => {
     this.token = token;
     this.http.post<{data}>('http://localhost:5000/graphql', {query: signUpGQL(email, id, token)}).subscribe(({data}) => {
-      console.log(data);
-      this.authStateChanged.next(this.token);
+      const { mongoId: id, firebaseId, email } = data.signup;
+      if (!!id) {
+        this.propagateAuthStateAndNavigate({id, firebaseId, email})
+      }
     })
   }
   private signInUser = ({ email, uid: id, ra: token }: Credentials) => {
     this.token = token;
     this.http.post<{data}>('http://localhost:5000/graphql', {query: signInGQL(email, id, token)}).subscribe(({data}) => {
-      console.log(data);
-      this.authStateChanged.next(this.token);
+      const { mongoId: id, firebaseId, email } = data.signin;
+      if (!!id) {
+        this.propagateAuthStateAndNavigate({id, firebaseId, email})
+      }
     })
   }
+  signOut = () => {
+    this.afAuth.auth.signOut().then(_ => {
+      this.token = '';
+      this.propagateAuthStateAndNavigate(null);
+    }).catch(err => {
+      console.log(err)
+    });
+  }
+
+  propagateAuthStateAndNavigate = (user) => {
+    this.user = user;
+    this.authStateChanged.next(this.user);
+    this.router.navigate(['/'])
+  }
+
+  listenForStateChange = () => this.afAuth.auth.onAuthStateChanged(user => {
+    console.log(user, 'CHANGED')
+  });
 
 }
