@@ -1,21 +1,7 @@
 const Post = require('mongoose').model('Post');
-
-const normalizePost = (post) => ({
-    id: post.id,
-    title: post.title,
-    content: post.content,
-    imageURL: post.imageURL
-})
+const { normalizePost } = require('./shared');
 
 module.exports = {
-    posts: async () => {
-        try {
-            const fetchedPosts = await Post.find();
-            return fetchedPosts.map(normalizePost);
-        } catch (err) {
-            console.log(err);
-        }
-    },
     post: async ({ id }) => {
         try {
             const post = await Post.findById(id);

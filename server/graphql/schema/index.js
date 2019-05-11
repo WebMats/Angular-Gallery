@@ -7,12 +7,19 @@ module.exports = buildSchema(`
         firebaseId: String!
         email: String!
     }
+    type Post {
+        id: String!
+        title: String!
+        content: String!
+        imageURL: String!
+    }
     input SignInput {
         firebaseId: String!
         email: String!
         token: String!
     }
     type RootQuery {
+        posts: [Post!]
         signin(signinInput: SignInput): User!
     }
     type RootMutation {

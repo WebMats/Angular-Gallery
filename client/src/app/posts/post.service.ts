@@ -17,7 +17,7 @@ export class PostService {
 
     getPosts = () => {
         // waiting for deployed backend url
-        this.http.post<{data: { posts: Post[] }}>('http://localhost:5000/protected', { 
+        this.http.post<{data: { posts: Post[] }}>('http://localhost:5000/graphql', { 
             query: getAllGQL() 
         }).subscribe(({ data }) => {
             this.posts = data.posts;

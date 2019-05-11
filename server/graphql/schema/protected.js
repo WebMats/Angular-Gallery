@@ -14,7 +14,6 @@ module.exports = buildSchema(`
         imageURL: String!
     }
     type RootQuery {
-        posts: [Post!]
         post(id: String!): Post!
     }
     type RootMutation {
