@@ -25,10 +25,10 @@ export class PostService {
         });
     }
     getPost = (id) => {
-        return this.http.post<{data:{ post: Post }}>('http://localhost:5000/graphql', { query: getOneGQL(id)})
+        return this.http.post<{data:{ post: Post }}>('http://localhost:5000/protected', { query: getOneGQL(id)})
     }
     updatePostInBackend = (id, updatedPost) => {
-        this.http.post<{data}>('http://localhost:5000/graphql', {
+        this.http.post<{data}>('http://localhost:5000/protected', {
             query: updateOneGQL(id, updatedPost)
         }).subscribe(({ data }) => {
             this.posts = this.posts.map(post => {
@@ -68,7 +68,7 @@ export class PostService {
         const ref = this.storage.ref(filePath);
         ref.put(image, { contentType: image.type }).then(() => {
             ref.getDownloadURL().subscribe((imageURL: string) => {
-                this.http.post<{data}>('http://localhost:5000/graphql', { 
+                this.http.post<{data}>('http://localhost:5000/protected', { 
                     query: createGQL(post.title, post.content, `${imageURL}`) 
                 }).subscribe(({ data }) => {
                     post.id = data.postId;
@@ -81,7 +81,7 @@ export class PostService {
         })
     }
     deletePost = (postID: string) => {
-        this.http.post('http://localhost:5000/graphql', {
+        this.http.post('http://localhost:5000/protected', {
             query: deleteGQL(postID)
         }).subscribe((response) => {
             this.posts = this.posts.filter(({ id }) => id !== postID);

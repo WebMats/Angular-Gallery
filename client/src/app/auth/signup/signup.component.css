@@ -5,3 +5,22 @@ mat-form-field {
 mat-spinner {
     margin: auto;
 }
+
+.google-button {
+    float: right;
+}
+
+@media (max-width: 400px) {
+    .google-button {
+        display: block;
+        width: 100%;
+        margin: 1rem 0;
+    }
+    button[mat-raised-button] {
+        width: 100%;
+        display: block;
+    }
+    mat-card {
+        padding-bottom: 4rem;
+    }
+}

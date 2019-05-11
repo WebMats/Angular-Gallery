@@ -1,5 +1,6 @@
 import { Component } from "@angular/core";
 import { NgForm } from "@angular/forms";
+import { AuthService } from "../auth.service";
 
 
 @Component({
@@ -9,12 +10,15 @@ import { NgForm } from "@angular/forms";
 export class SignupComponent {
     isLoading: boolean = false;
 
+    constructor(private fbAuth: AuthService) {}
 
-    onLoginWithEmailAndPassword = (form: NgForm) => {
-
+    onSignUpWithEmailAndPassword = (form: NgForm) => {
+        this.isLoading = true;
+        this.fbAuth.emailAndPasswordSignUp(form.value.email, form.value.password);
     }
-    onLoginWithGoogle = () => {
-
+    onSignUpWithGoogle = () => {
+        this.isLoading = true;
+        this.fbAuth.googleSignIn();
     }
 
 }
