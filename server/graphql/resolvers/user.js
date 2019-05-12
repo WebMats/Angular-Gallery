@@ -4,11 +4,14 @@ const Post = require('mongoose').model('Post');
 const { normalizePost } = require('./shared');
 admin.initializeApp();
 
-const normalizeUser = (user) => ({
+const normalizeUser = (user) => {
+    console.log(user)
+    return {
     mongoId: user.id,
     firebaseId: user.firebaseId,
     email: user.email
-})
+    }
+}
 
 module.exports = {
     signup: async ({ signupInput }) => {

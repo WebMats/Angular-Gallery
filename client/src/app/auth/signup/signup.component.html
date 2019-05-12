@@ -1,6 +1,6 @@
 <mat-card>
-    <mat-spinner *ngIf="isLoading"></mat-spinner>
-    <form (submit)="onSignUpWithEmailAndPassword(f)" *ngIf="!isLoading" #f="ngForm">
+    <mat-spinner *ngIf="isLoading && !fbAuthError"></mat-spinner>
+    <form (submit)="onSignUpWithEmailAndPassword(f)" *ngIf="!isLoading || !!fbAuthError" #f="ngForm">
         <mat-form-field>
             <input matInput name="email" ngModel type="email" placeholder="E-Mail" #emailInput="ngModel" required email/>
             <mat-error *ngIf="emailInput.invalid" >Please enter a valid email.</mat-error>
@@ -9,14 +9,15 @@
             <input matInput name="password" ngModel type="password" placeholder="Password" #passwordInput="ngModel" required/>
             <mat-error *ngIf="passwordInput.invalid" >Please enter a valid password.</mat-error>
         </mat-form-field>
-        <button mat-raised-button color="accent" *ngIf="!isLoading">Signup</button>
+        <button mat-raised-button color="accent" *ngIf="!isLoading || !!fbAuthError">Signup</button>
         <button 
             type="button" 
             (click)="onSignUpWithGoogle()" 
             mat-raised-button 
             color="primary"
             class="google-button"
-            *ngIf="!isLoading"
+            *ngIf="!isLoading || !!fbAuthError"
         >Signup With Google</button>
+        <p class="firebase-auth-error" *ngIf="fbAuthError">{{ fbAuthError }}</p>
     </form>
 </mat-card>

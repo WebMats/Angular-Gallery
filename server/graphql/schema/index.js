@@ -12,6 +12,7 @@ module.exports = buildSchema(`
         title: String!
         content: String!
         imageURL: String!
+        creator: ID!
     }
     input SignInput {
         firebaseId: String!
