@@ -3,9 +3,10 @@ import { HttpClient } from '@angular/common/http';
 import { Post } from './post.model';
 import { getAllGQL, createGQL, deleteGQL, updateOneGQL, getOneGQL  } from '../graphql/posts';
 import { Subject, Observable } from 'rxjs';
-import { finalize } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { AngularFireStorage } from '@angular/fire/storage';
+import { AuthService } from '../auth/auth.service';
+
 
 @Injectable({ providedIn: 'root' })
 export class PostService {
@@ -13,7 +14,7 @@ export class PostService {
     downloadURL: Observable<string>;
     private posts: Post[] = [];
 
-    constructor(private http: HttpClient, private router: Router, private storage: AngularFireStorage) {}
+    constructor(private http: HttpClient, private router: Router, private storage: AngularFireStorage, private auth: AuthService) {}
 
     getPosts = () => {
         // waiting for deployed backend url
@@ -64,7 +65,8 @@ export class PostService {
         }
     }
     addNewPost = (post, image) => {
-        const filePath = `${Date.now()}`;
+        const id = this.auth.getUser().id;
+        const filePath = `${id}@${Date.now()}`;
         const ref = this.storage.ref(filePath);
         ref.put(image, { contentType: image.type }).then(() => {
             ref.getDownloadURL().subscribe((imageURL: string) => {

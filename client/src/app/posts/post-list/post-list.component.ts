@@ -11,22 +11,32 @@ import { AuthService } from 'src/app/auth/auth.service';
 })
 export class PostListComponent implements OnInit, OnDestroy {
     isLoading: boolean = false;
-    subscription: Subscription;
+    private subToPosts: Subscription;
+    private subToUser: Subscription;
+    private subToFireAuth: Subscription;
     posts: Post[] = [];
     authenticated: boolean = false;
-    private authSub: Subscription;
+    user_id: string;
 
   constructor( private postsService: PostService, private auth: AuthService ) { }
 
   ngOnInit() {
     this.isLoading = true;
+    this.user_id = !!this.auth.getUser() ? this.auth.getUser().id : null;
+    this.authenticated = !!this.auth.getUser();
     this.postsService.getPosts();
-    this.subscription = this.postsService.postsChanged.subscribe((posts: Post[]) => {
+  
+    this.subToPosts = this.postsService.postsChanged.subscribe((posts: Post[]) => {
       this.posts = posts;
       this.isLoading = false;
     })
-    this.authenticated = !!this.auth.getUser();
-    this.authSub = this.auth.getAuthStateListener().subscribe(user => {
+
+    this.subToFireAuth = this.auth.isAuthenticated.subscribe(user => {
+      this.authenticated = !!user
+    })
+
+    this.subToUser = this.auth.getAuthStateListener().subscribe(user => {
+      this.user_id = !!user ? user.id : undefined;
       this.authenticated = !!user;
     });
   }
@@ -36,8 +46,9 @@ export class PostListComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
-    this.authSub.unsubscribe();
+    this.subToPosts.unsubscribe();
+    this.subToUser.unsubscribe();
+    this.subToFireAuth.unsubscribe();
   }
 
 }

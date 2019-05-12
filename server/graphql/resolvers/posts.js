@@ -11,13 +11,11 @@ module.exports = {
         }
     },
     createPost: async ({ postInput }, req) => {
-        // if (false) {
-        //     console.log('if TRUE')
-        // }
         const post = new Post({ 
             title: postInput.title, 
             content: postInput.content, 
-            imageURL: postInput.imageURL 
+            imageURL: postInput.imageURL,
+            creator: req.mongoID
         });
         try {
             const savedPost = await post.save();
@@ -26,18 +24,18 @@ module.exports = {
             console.log(err)
         }
     },
-    updatePost: async ({ postId, updateInput }) => {
-        const updatedPost = new Post({ _id: postId, ...updateInput });
+    updatePost: async ({ postId, updateInput }, req) => {
+        const updatedPost = new Post({ _id: postId, ...updateInput, creator: req.mongoID });
         try {
-            await Post.updateOne({ _id: postId }, updatedPost)
+            await Post.updateOne({ _id: postId, creator: req.mongoID }, updatedPost)
             return normalizePost(updatedPost);
         } catch (err) {
             console.log(err)
         }
     },
-    deletePost: async ({ postId }) => {
+    deletePost: async ({ postId }, req) => {
         try {
-            await Post.deleteOne({ _id: postId });
+            await Post.deleteOne({ _id: postId, creator: req.mongoID });
             return 'Deleted'
         } catch (err) {
             console.log(err);

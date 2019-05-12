@@ -1,27 +1,36 @@
-import { Injectable, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { auth } from 'firebase/app';
 import { Router } from '@angular/router';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { Credentials, User } from './user.model';
 import { HttpClient } from '@angular/common/http';
 import { signUpGQL, signInGQL } from '../graphql/auth';
-import { Subject } from 'rxjs';
+import { Subject, Observable } from 'rxjs';
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+  isAuthenticated: Observable<any>;
   private authStateChanged = new Subject<User | null >();
   private token: string = '';
   private user: User | null;
-  constructor(private router: Router, private afAuth: AngularFireAuth, private http: HttpClient) { }
+  constructor(private router: Router, private afAuth: AngularFireAuth, private http: HttpClient) { 
+    this.isAuthenticated = this.afAuth.authState;
+    this.afAuth.auth.onAuthStateChanged(user => {
+      if (user) {
+        this.signInUser(<any>user);
+      }
+    })
+  }
 
   getToken = (): string => this.token;
   getAuthStateListener = () => this.authStateChanged.asObservable();
   getUser = () => this.user;
   googleSignIn = async () => {
     const provider = new auth.GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: "select_account" })
     const credentials = await this.afAuth.auth.signInWithPopup(provider);
     return credentials.additionalUserInfo.isNewUser ? this.signUpUser(<any>credentials.user) : this.signInUser(<any>credentials.user);
   }
@@ -64,13 +73,8 @@ export class AuthService {
   }
 
   propagateAuthStateAndNavigate = (user) => {
+    this.router.navigate(['/'])
     this.user = user;
     this.authStateChanged.next(this.user);
-    this.router.navigate(['/'])
   }
-
-  listenForStateChange = () => this.afAuth.auth.onAuthStateChanged(user => {
-    console.log(user, 'CHANGED')
-  });
-
 }
