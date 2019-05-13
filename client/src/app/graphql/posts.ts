@@ -5,6 +5,7 @@ export const getAllGQL = (): string => (`
             title
             content
             imageURL
+            creator
         }
     }
 `)
