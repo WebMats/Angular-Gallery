@@ -8,6 +8,6 @@ steps:
     args: ['build', '--prod']
     dir: 'client'
 # Deploy
-  - name: 'gcr.io/$PROJECT_ID/firebase:5.11.0'
-    args: ['deploy']
+  - name: 'gcr.io/$PROJECT_ID/firebase
+    args: ['deploy', '--only', 'hosting']
     dir: 'client'
