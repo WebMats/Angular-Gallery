@@ -6,6 +6,7 @@ import { Subject, Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { AuthService } from '../auth/auth.service';
+import { environment } from '../../environments/environment';
 
 
 @Injectable({ providedIn: 'root' })
@@ -18,7 +19,7 @@ export class PostService {
 
     getPosts = () => {
         // waiting for deployed backend url
-        this.http.post<{data: { posts: Post[] }}>('http://localhost:5000/graphql', { 
+        this.http.post<{data: { posts: Post[] }}>('/graphql', { 
             query: getAllGQL() 
         }).subscribe(({ data }) => {
             this.posts = data.posts;
@@ -26,10 +27,10 @@ export class PostService {
         });
     }
     getPost = (id) => {
-        return this.http.post<{data:{ post: Post }}>('http://localhost:5000/protected', { query: getOneGQL(id)})
+        return this.http.post<{data:{ post: Post }}>('/protected', { query: getOneGQL(id)})
     }
     updatePostInBackend = (id, updatedPost) => {
-        this.http.post<{data}>('http://localhost:5000/protected', {
+        this.http.post<{data}>('/protected', {
             query: updateOneGQL(id, updatedPost)
         }).subscribe(({ data }) => {
             this.posts = this.posts.map(post => {
@@ -70,7 +71,7 @@ export class PostService {
         const ref = this.storage.ref(filePath);
         ref.put(image, { contentType: image.type }).then(() => {
             ref.getDownloadURL().subscribe((imageURL: string) => {
-                this.http.post<{data}>('http://localhost:5000/protected', { 
+                this.http.post<{data}>('/protected', { 
                     query: createGQL(post.title, post.content, `${imageURL}`) 
                 }).subscribe(({ data }) => {
                     post.id = data.postId;
@@ -83,7 +84,7 @@ export class PostService {
         })
     }
     deletePost = (postID: string) => {
-        this.http.post('http://localhost:5000/protected', {
+        this.http.post('/protected', {
             query: deleteGQL(postID)
         }).subscribe((response) => {
             this.posts = this.posts.filter(({ id }) => id !== postID);
