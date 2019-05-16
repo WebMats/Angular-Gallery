@@ -8,4 +8,5 @@ export const environment = {
     storageBucket: "angular-f1b31.appspot.com",
     messagingSenderId: "438042561829"
   },
+  baseURL: 'https://angular--gallery.herokuapp.com',
 };

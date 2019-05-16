@@ -87,7 +87,7 @@ export class AuthService {
 
   private signUpUser = ({ email, uid: id, ra: token }: Credentials) => {
     this.token = token;
-    this.http.post<{data}>('http://localhost:5000/graphql', {query: signUpGQL(email, id, token)}).subscribe(({data}) => {
+    this.http.post<{data}>('/graphql', {query: signUpGQL(email, id, token)}).subscribe(({data}) => {
       const { mongoId: id, firebaseId, email } = data.signup;
       if (!!id) {
         this.propagateAuthStateAndNavigate({id, firebaseId, email});
@@ -97,7 +97,7 @@ export class AuthService {
   }
   private signInUser = ({ email, uid: id, ra: token }: Credentials) => {
     this.token = token;
-    this.http.post<{data}>('http://localhost:5000/graphql', {query: signInGQL(email, id, token)}).subscribe(({data}) => {
+    this.http.post<{data}>('/graphql', {query: signInGQL(email, id, token)}).subscribe(({data}) => {
       const { mongoId: id, firebaseId, email } = data.signin;
       if (!!id) {
         this.propagateAuthStateAndNavigate({id, firebaseId, email})
