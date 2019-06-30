@@ -2,6 +2,7 @@ const admin = require('firebase-admin')
 const User = require('mongoose').model('User');
 const Post = require('mongoose').model('Post');
 const { normalizePost } = require('./shared');
+const Paginator = require('./utils')
 admin.initializeApp();
 
 const normalizeUser = (user) => ({
@@ -36,10 +37,24 @@ module.exports = {
             return new Error('You are not authenticated')
         }
     },
-    posts: async () => {
+    posts: async ({ pageSize = 5, after, next = true }) => {
         try {
             const fetchedPosts = await Post.find();
-            return fetchedPosts.map(normalizePost);
+            if (!fetchedPosts[0]) {
+                return {posts: [], cursor: 0, page: 0, total: 0}
+            }
+            const paginator = new Paginator(fetchedPosts, after, pageSize)
+            let paginatedPosts = []
+            if (!next) {
+                paginator.setCursorToPrevPage();
+            }
+            paginatedPosts = paginator.next()
+            return {
+                posts: paginatedPosts.map(normalizePost),
+                cursor: paginator.getCursor(),
+                page: paginator.getPage(),
+                total: paginator.getLength()
+            };
         } catch (err) {
             console.log(err);
         }

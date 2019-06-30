@@ -1,11 +1,16 @@
-export const getAllGQL = (): string => (`
+export const getAllGQL = (pageSize, after, next): string => (`
     query FetchPosts {
-        posts {
-            id
-            title
-            content
-            imageURL
-            creator
+        posts(pageSize: ${pageSize}, after: "${after}", next: ${next}) {
+            posts {
+                id
+                title
+                content
+                imageURL
+                creator
+            }
+            cursor
+            total
+            page
         }
     }
 `)
