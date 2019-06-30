@@ -14,15 +14,18 @@ export class PostService {
     postsChanged = new Subject<Post[]>();
     downloadURL: Observable<string>;
     private posts: Post[] = [];
+    public page: number = 0;
+    public total: number = 0;
 
     constructor(private http: HttpClient, private router: Router, private storage: AngularFireStorage, private auth: AuthService) {}
 
-    getPosts = () => {
-        // waiting for deployed backend url
-        this.http.post<{data: { posts: Post[] }}>('/graphql', { 
-            query: getAllGQL() 
+    getPosts = (pageSize, after, next = true) => {
+        this.http.post<{data: { posts: { posts: Post[], page: number, total: number } } }>('/graphql', { 
+            query: getAllGQL(pageSize, after, next) 
         }).subscribe(({ data }) => {
-            this.posts = data.posts;
+            this.posts = data.posts.posts;
+            this.page = data.posts.page;
+            this.total = data.posts.total;
             this.postsChanged.next([...this.posts]);
         });
     }
@@ -33,11 +36,6 @@ export class PostService {
         this.http.post<{data}>('/protected', {
             query: updateOneGQL(id, updatedPost)
         }).subscribe(({ data }) => {
-            this.posts = this.posts.map(post => {
-                if (post.id = data.updatePost.id) return data.updatePost
-                return post;
-            });
-            this.postsChanged.next([...this.posts]);
             this.router.navigate(["/"])
         })
     }
@@ -74,21 +72,14 @@ export class PostService {
                 this.http.post<{data}>('/protected', { 
                     query: createGQL(post.title, post.content, `${imageURL}`) 
                 }).subscribe(({ data }) => {
-                    post.id = data.postId;
-                    post.imageURL = imageURL;
-                    this.posts.push(post);
-                    this.postsChanged.next([...this.posts]);
                     this.router.navigate(["/"])
                 });
             })
         })
     }
     deletePost = (postID: string) => {
-        this.http.post('/protected', {
+        return this.http.post('/protected', {
             query: deleteGQL(postID)
-        }).subscribe((response) => {
-            this.posts = this.posts.filter(({ id }) => id !== postID);
-            this.postsChanged.next([...this.posts]);
         })
     }
 }

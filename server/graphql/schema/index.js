@@ -14,13 +14,19 @@ module.exports = buildSchema(`
         imageURL: String!
         creator: ID!
     }
+    type PaginatedPosts {
+        posts: [Post!]
+        cursor: String
+        page: Int!
+        total: Int!
+    }
     input SignInput {
         firebaseId: String!
         email: String!
         token: String!
     }
     type RootQuery {
-        posts: [Post!]
+        posts(pageSize: Int, after: String, next: Boolean): PaginatedPosts!
         signin(signinInput: SignInput): User!
     }
     type RootMutation {

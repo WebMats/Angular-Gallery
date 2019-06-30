@@ -3,6 +3,7 @@ import { PostService } from '../post.service';
 import { Post } from '../post.model';
 import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
+import { PageEvent } from '@angular/material';
 
 @Component({
   selector: 'app-post-list',
@@ -14,6 +15,8 @@ export class PostListComponent implements OnInit, OnDestroy {
     private subToPosts: Subscription;
     private subToUser: Subscription;
     private subToFireAuth: Subscription;
+    public postsPerPage: number = 1;
+    public pageSizeOptions: number[] = [1, 3, 5]
     posts: Post[] = [];
     authenticated: boolean = false;
     user_id: string;
@@ -24,7 +27,7 @@ export class PostListComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     this.user_id = !!this.auth.getUser() ? this.auth.getUser().id : null;
     this.authenticated = !!this.auth.getUser();
-    this.postsService.getPosts();
+    this.postsService.getPosts(this.postsPerPage, null);
   
     this.subToPosts = this.postsService.postsChanged.subscribe((posts: Post[]) => {
       this.posts = posts;
@@ -41,8 +44,23 @@ export class PostListComponent implements OnInit, OnDestroy {
     });
   }
 
+  onChangePage = (pageData: PageEvent) => {
+    this.isLoading = true;
+    if (pageData.pageSize !== this.postsPerPage) {
+      this.postsPerPage = pageData.pageSize
+      this.postsService.getPosts(this.postsPerPage, null)
+    } else if (pageData.previousPageIndex < pageData.pageIndex) {
+      this.postsService.getPosts(this.postsPerPage, this.posts[this.posts.length - 1].id)
+    } else if (pageData.previousPageIndex > pageData.pageIndex) {
+      this.postsService.getPosts(this.postsPerPage, this.posts[this.posts.length - 1].id, false)
+    } 
+  }
+
   onDelete = (id: string) => {
-    this.postsService.deletePost(id);
+    this.isLoading = true
+    this.postsService.deletePost(id).subscribe(() => {
+      this.postsService.getPosts(this.postsPerPage, null)
+    });
   }
 
   ngOnDestroy() {
